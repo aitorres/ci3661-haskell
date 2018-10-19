@@ -68,7 +68,7 @@ unirLaberinto trifurcacion laberinto camino =
 FUNCIONES DE ACCESO
 -}
 
-{- Una función que reciba un laberinto y una ruta y retorne el laberinto que comienza en el
+{- Función que recibe un laberinto y una ruta y retorna el laberinto que comienza en el
 punto al que conduce esa ruta -}
 recorrer :: Maybe Laberinto -> [String] -> Maybe Laberinto
 recorrer Nothing _ = Nothing
@@ -87,3 +87,17 @@ recorrer lab@(Just laberinto) (c:cs) = recorrer caminoEscogido' cs
             caminoEscogido' = case caminoEscogido of
                 Nothing -> lab -- ignorar paso
                 l -> l
+
+{- Función que recibe un laberinto y retorna el laberinto que comienza al voltear a la
+izquierda -}
+voltearIquierda :: Maybe Laberinto -> Maybe Laberinto
+voltearIquierda lab = recorrer lab ["izquierda"]
+
+{- Función que recibe un laberinto y retorna el laberinto que comienza al voltear a la
+derecha -}
+voltearDerecha :: Maybe Laberinto -> Maybe Laberinto
+voltearDerecha lab = recorrer lab ["derecha"]
+
+{- Función que recibe un laberinto y retorna el laberinto que comienza al seguir recto -}
+seguirRecto :: Maybe Laberinto -> Maybe Laberinto
+seguirRecto lab = recorrer lab ["recto"]
