@@ -32,10 +32,18 @@ data Tesoro =
 FUNCIONES DE CONSTRUCCION
 -}
 
-{- Una función que retorne un camino sin salida -}
+{- Fnción que retorna un camino sin salida -}
 caminoSinSalida :: Trifurcacion
 caminoSinSalida = Trifurcacion { 
         derechaTrifurcacion=Nothing, 
         izquierdaTrifurcacion=Nothing,
         rectoTrifurcacion=Nothing
     }
+
+{- Función que recibe un String con la descripción de un tesoro y un laberinto
+indicando qué encontrarán si pasan por alto el tesoro, y retorna el Tesoro. -}
+crearTesoro :: String -> Maybe Laberinto -> Tesoro
+crearTesoro descripcion laberinto = Tesoro {
+    descripcionTesoro=descripcion,
+    rectoTesoro=laberinto
+}
