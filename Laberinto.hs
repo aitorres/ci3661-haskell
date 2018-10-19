@@ -6,22 +6,36 @@ module Laberinto where
 -}
 data Laberinto =
     Laberinto Trifurcacion Tesoro
-
+    deriving Show
 {-
     Trifurcación para un laberinto.
 -}
 data Trifurcacion =
     Trifurcacion { 
-        tri_derecha :: Maybe Laberinto, -- Si se gira a la derecha
-        tri_izquierda :: Maybe Laberinto, -- Si se gira a la izquierda
-        tri_recto :: Maybe Laberinto  -- Si se sigue recto
+        derechaTrifurcacion :: Maybe Laberinto, -- Si se gira a la derecha
+        izquierdaTrifurcacion :: Maybe Laberinto, -- Si se gira a la izquierda
+        rectoTrifurcacion :: Maybe Laberinto  -- Si se sigue recto
     }
+    deriving Show
 
 {-
     Tesoro a encontrar en un laberinto
 -}
 data Tesoro =
     Tesoro {
-        tes_descripcion :: String, -- Descripción del tesoro
-        tes_recto :: Maybe Laberinto -- Si se ignora el tesoro y se sigue recto
+        descripcionTesoro :: String, -- Descripción del tesoro
+        rectoTesoro :: Maybe Laberinto -- Si se ignora el tesoro y se sigue recto
+    }
+    deriving Show
+
+{-
+FUNCIONES DE CONSTRUCCION
+-}
+
+{- Una función que retorne un camino sin salida -}
+caminoSinSalida :: Trifurcacion
+caminoSinSalida = Trifurcacion { 
+        derechaTrifurcacion=Nothing, 
+        izquierdaTrifurcacion=Nothing,
+        rectoTrifurcacion=Nothing
     }
