@@ -47,3 +47,13 @@ crearTesoro descripcion laberinto = Tesoro {
     descripcionTesoro=descripcion,
     rectoTesoro=laberinto
 }
+
+{- Función que recibe una Trifurcacion, un laberinto y un indicador de cuál camino
+los relaciona (izquierda, derecha, recto), y retorna una Trifurcacion en la que se
+indique que dicho camino conduce a dicho laberinto. -}
+unirLaberinto :: Trifurcacion -> Maybe Laberinto -> String -> Trifurcacion
+unirLaberinto trifurcacion laberinto camino =
+    case camino of
+        "izquierda" -> trifurcacion { izquierdaTrifurcacion = laberinto }
+        "derecha" -> trifurcacion { derechaTrifurcacion = laberinto }
+        "recto" -> trifurcacion { rectoTrifurcacion = laberinto }
