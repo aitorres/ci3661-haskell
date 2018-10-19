@@ -1,11 +1,14 @@
 module Laberinto where
-
+--------------------------------------------------------------------------------------------
 {-
     Laberinto con la información que el sabio
     conoce.
 -}
 data Laberinto =
-    Laberinto Trifurcacion Tesoro
+    Laberinto {
+        trifurcacionLaberinto :: Trifurcacion,
+        tesoroLaberinto :: Tesoro
+    }
     deriving Show
 {-
     Trifurcación para un laberinto.
@@ -27,14 +30,15 @@ data Tesoro =
         rectoTesoro :: Maybe Laberinto -- Si se ignora el tesoro y se sigue recto
     }
     deriving Show
+--------------------------------------------------------------------------------------------
 
 {-
 FUNCIONES DE CONSTRUCCION
 -}
 
 {- Fnción que retorna un camino sin salida -}
-caminoSinSalida :: Trifurcacion
-caminoSinSalida = Trifurcacion { 
+caminoDefault :: Trifurcacion
+caminoDefault = Trifurcacion { 
         derechaTrifurcacion=Nothing, 
         izquierdaTrifurcacion=Nothing,
         rectoTrifurcacion=Nothing
@@ -57,3 +61,22 @@ unirLaberinto trifurcacion laberinto camino =
         "izquierda" -> trifurcacion { izquierdaTrifurcacion = laberinto }
         "derecha" -> trifurcacion { derechaTrifurcacion = laberinto }
         "recto" -> trifurcacion { rectoTrifurcacion = laberinto }
+
+--------------------------------------------------------------------------------------------
+
+{-
+FUNCIONES DE ACCESO
+-}
+
+{- Una función que reciba un laberinto y una ruta y retorne el laberinto que comienza en el
+punto al que conduce esa ruta -}
+recorrer :: Maybe Laberinto -> [String] -> Maybe Laberinto
+recorrer Nothing _ = Nothing
+recorrer laberinto [] = laberinto
+recorrer (Just laberinto) (c:cs) = recorrer caminoEscogido cs
+        where 
+            trifurcacion = trifurcacionLaberinto laberinto -- trifurcación del laberinto
+            caminoEscogido = case c of
+                "izquierda" -> izquierdaTrifurcacion trifurcacion
+                "derecha" -> derechaTrifurcacion trifurcacion
+                "recto" -> rectoTrifurcacion trifurcacion
