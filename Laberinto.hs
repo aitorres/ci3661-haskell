@@ -72,11 +72,18 @@ FUNCIONES DE ACCESO
 punto al que conduce esa ruta -}
 recorrer :: Maybe Laberinto -> [String] -> Maybe Laberinto
 recorrer Nothing _ = Nothing
-recorrer laberinto [] = laberinto
-recorrer (Just laberinto) (c:cs) = recorrer caminoEscogido cs
+recorrer lab [] = lab
+recorrer lab@(Just laberinto) (c:cs) = recorrer caminoEscogido' cs
         where 
             trifurcacion = trifurcacionLaberinto laberinto -- trifurcación del laberinto
+            
+            -- Camino escogido por el usuario
             caminoEscogido = case c of
                 "izquierda" -> izquierdaTrifurcacion trifurcacion
                 "derecha" -> derechaTrifurcacion trifurcacion
                 "recto" -> rectoTrifurcacion trifurcacion
+
+            -- En caso de encontrarse con una pared, ignorar el paso actual
+            caminoEscogido' = case caminoEscogido of
+                Nothing -> lab -- ignorar paso
+                l -> l
