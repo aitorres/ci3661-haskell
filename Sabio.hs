@@ -1,4 +1,10 @@
-opciones :: IO ()
+import Laberinto
+import Control.Monad
+import qualified Control.Monad.State as St
+ 
+type LaberintoState = St.StateT Laberinto IO (Maybe Laberinto)
+
+opciones :: IO (Maybe Laberinto)
 opciones = do
     putStrLn "El sabio del laberinto"
     putStrLn "Opciones:"
@@ -12,14 +18,18 @@ opciones = do
     putStrLn "8: Hablar de un laberinto de nombre conocido"
     putStrLn "9: Imprimir opciones"
     putStrLn "10: Salir"
+    return Nothing
 
-infi :: IO ()
+infi :: IO (Maybe Laberinto)
 infi = do
     opciones
     opcion <- getLine
     if (opcion /= "10") then infi
-    else putStrLn "Chao"
+    else do 
+        putStrLn "Chao"
+        return Nothing
+        
 
-main :: IO()
+main :: IO (Maybe Laberinto)
 main = do
     infi
