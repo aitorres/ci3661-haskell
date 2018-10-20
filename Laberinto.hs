@@ -7,7 +7,7 @@ module Laberinto where
 data Laberinto =
     Laberinto {
         trifurcacionLaberinto :: Trifurcacion,
-        tesoroLaberinto :: Tesoro
+        tesoroLaberinto :: Maybe Tesoro
     }
     deriving Show
 {-
@@ -43,6 +43,13 @@ caminoDefault = Trifurcacion {
         izquierdaTrifurcacion=Nothing,
         rectoTrifurcacion=Nothing
     }
+
+{- Función que retorna un laberinto default -}
+laberintoDefault :: Laberinto
+laberintoDefault = Laberinto {
+    trifurcacionLaberinto = caminoDefault,
+    tesoroLaberinto = Nothing
+}
 
 {- Función que recibe un String con la descripción de un tesoro y un laberinto
 indicando qué encontrarán si pasan por alto el tesoro, y retorna el Tesoro. -}
