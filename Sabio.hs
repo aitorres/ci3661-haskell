@@ -27,22 +27,28 @@ infi :: LaberintoState
 infi = do
     opcion <- lift getLine -- leemos la opcion
     case opcion of
-        "1" -> laberintoNuevo
+        "1" -> do
+            laberintoNuevo
+            infi
         "9" -> do
             lift opciones
+            infi
+        "10" -> do
+            lift $ putStrLn "Chao viajero"
             return Nothing
-        _ -> return Nothing
-    if (opcion /= "10") then infi
-    else do
-        lift $ putStrLn "Chao"
-        return Nothing
+        _ -> infi
         
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
 
 main :: IO ()
 main = do
     opciones
     St.runStateT infi laberintoDefault
     return ()
+
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
 
 {- Función que crea un laberinto nuevo a partir de una ruta. -}
 laberintoNuevo :: LaberintoState
