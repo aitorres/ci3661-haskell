@@ -44,7 +44,7 @@ caminoDefault = Trifurcacion {
         rectoTrifurcacion=Nothing
     }
 
-{- Función que retorna un laberinto default -}
+{- Función que retorna un laberinto default con camino sin salida y sin tesoro -}
 laberintoDefault :: Laberinto
 laberintoDefault = Laberinto {
     trifurcacionLaberinto = caminoDefault,
