@@ -104,9 +104,9 @@ momento se convierte en el laberinto alcanzable por esa dirección.-}
 abrirPared :: Maybe Laberinto -- ^ Laberinto a modificar
         -> Ruta         -- ^ Ruta a recorrer
         -> Maybe Laberinto    -- ^ Laberinto modificado
-
 abrirPared Nothing _ = Nothing
-abrirPared (Just laberinto) ruta@(c:cs) =
+abrirPared lab [] = lab
+abrirPared mlab@(Just laberinto) ruta@(c:cs) =
     let trifurcacion = trifurcacionLaberinto laberinto -- Trifurcación del laberinto
         camino = case c of -- Camino tomado en la dirección `c`
             "izquierda" -> izquierdaTrifurcacion trifurcacion
