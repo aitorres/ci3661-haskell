@@ -52,7 +52,9 @@ infi = do
             infi -- repetimos loop
 
         "2.1" -> case curRuta of -- Continuar ruta
-            [] -> lift $ putStrLn "No hay ruta que seguir." -- Si no hay ruta que seguir
+            [] -> do
+                lift $ putStrLn "No hay ruta que seguir." -- Si no hay ruta que seguir
+                infi -- repetimos loop
             _ -> do
                 lift $ putStrLn "Escribe la ruta separada por espacios. Ejemplo: derecha izquierda derecha recto."
                 rutaStr <- lift getLine -- leemos la ruta
