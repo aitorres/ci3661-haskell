@@ -124,6 +124,36 @@ abrirPared mlab@(Just laberinto) ruta@(c:cs) =
         }
     )
 
+{-|
+Función que dada una ruta, crea una pared en el punto alcanzable.
+-}
+crearPared :: Maybe Laberinto   {-^ Laberinto a modificar-}
+            -> Ruta             {-^ Ruta a seguir -}
+            -> Maybe Laberinto  {-^ Laberinto modificado -}
+crearPared Nothing _ = Nothing
+-- En el caso en el que llegamos al ultimo camino, lo eliminamos
+crearPared _ [] = Nothing
+crearPared mlab@(Just laberinto) (c:cs) =
+    Just $ laberinto { trifurcacionLaberinto = trifurcacion' }
+    where 
+         -- trifurcación original
+        trifurcacion = trifurcacionLaberinto laberinto
+        -- Trifurcación modificada
+        trifurcacion' = case c of
+            "izquierda" -> trifurcacion {
+                izquierdaTrifurcacion = 
+                    crearPared (izquierdaTrifurcacion trifurcacion) cs
+            }
+            "recto" -> trifurcacion {
+                rectoTrifurcacion =
+                    crearPared (rectoTrifurcacion trifurcacion) cs
+            }
+            "derecha" -> trifurcacion {
+                derechaTrifurcacion =
+                    crearPared (derechaTrifurcacion trifurcacion) cs
+            }
+            _ -> error "Camino incorrecto."
+
 --------------------------------------------------------------------------------------------
 
 -- * Funciones de Acceso
