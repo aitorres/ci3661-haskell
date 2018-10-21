@@ -73,6 +73,10 @@ infi = do
             paredAbierta
             infi
 
+        "4" -> do -- Reportar derrumbe
+            reportarDerrumbe
+            infi
+
         "2.1" -> case curRuta of -- Continuar ruta
             [] -> do
                 lift $ putStrLn "No hay ruta que seguir." -- Si no hay ruta que seguir
@@ -162,3 +166,19 @@ paredAbierta = do
     rutaStr <- lift getLine -- Leemos la ruta
     let ruta = words rutaStr
     St.put $ ( fromJust $ abrirPared (Just curLab) ruta, curRuta )    -- Actualizamos el estado
+
+{- | Se recibe un camino y una dirección (izquierda, derecha o recto). 
+Se sigue el laberinto hasta ese punto y se elimina el laberinto 
+alcanzable en la dirección dada.-}
+reportarDerrumbe :: LaberintoState
+reportarDerrumbe = do
+    (curLab, curRuta) <- St.get -- Se obtiene el estado actual
+
+    -- Leemos la ruta
+    lift $ putStrLn "Escribe la ruta separada por espacios (Ejemplo: derecha izquierda derecha recto)."
+    lift $ putStr "Ruta: "
+    lift $ hFlush stdout
+    rutaStr <- lift getLine
+    let ruta = words rutaStr
+
+    St.put $ (fromJust $ crearPared (Just curLab) ruta, curRuta) -- Actualizamos laberinto
