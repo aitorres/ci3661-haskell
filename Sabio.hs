@@ -1,13 +1,26 @@
+{-|
+Module      : Main
+License     : MIT
+Maintainer  : gustavoaca1997@gmail.com
+El programa principal que permite interactuar con el usuario, recibiendo rutas e indicando qué se
+encuentra al seguirlas
+-}
+
+module Main where
 import Laberinto
 import Control.Monad
 import Control.Monad.Trans
 import Data.Maybe
 import qualified Control.Monad.State as St
- 
+
+-- | Lista de direcciones a seguir.
 type Ruta = [String]
+
+-- | Monad Transformer que permite mantener el estado de la ruta
+-- y el laberinto.
 type LaberintoState = St.StateT (Laberinto, Ruta) IO ()
 
-{-Imprimir las opciones del usuario-}
+{-| Imprimir las opciones del usuario-}
 opciones :: LaberintoState
 opciones = do
     (curLab, curRuta) <- St.get -- obtenemos el estado actual
@@ -33,7 +46,7 @@ opciones = do
     lift $ putStrLn "10: Salir\n"
     lift $ putStrLn "Ingrese opción:"
 
-{- Loop infinito para leer las opciones del usuario -}
+{- |Loop infinito para leer las opciones del usuario -}
 infi :: LaberintoState
 infi = do
     (curLab, curRuta) <- St.get -- Obtenemos el estado actual
@@ -73,7 +86,7 @@ infi = do
         
 --------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------
-
+{-| Función principal.-}
 main :: IO ()
 main = do
     St.runStateT opciones (laberintoDefault, [])
@@ -83,7 +96,7 @@ main = do
 --------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------
 
-{- Función que crea un laberinto nuevo a partir de una ruta. -}
+{- |Función que crea un laberinto nuevo a partir de una ruta. -}
 laberintoNuevo :: LaberintoState
 laberintoNuevo = do
     lift $ putStrLn "Escribe la ruta separada por espacios. Ejemplo: derecha izquierda derecha recto."
@@ -95,7 +108,7 @@ laberintoNuevo = do
     -- Imprimimos nuevo laberinto
     -- lift $ putStrLn $ "Nuevo laberinto: " ++ show newLab
 
-{- Función que recorre el laberinto siguiendo una ruta -}
+{- |Función que recorre el laberinto siguiendo una ruta -}
 recorrerRuta :: LaberintoState
 recorrerRuta = do
     (curLab, curRuta) <- St.get -- Actual estado
