@@ -8,6 +8,8 @@ Modulo con las funciones y tipos de datos que permiten la interacción y constru
 module Laberinto where
 --------------------------------------------------------------------------------------------
 -- * Tipos de datos
+-- | Lista de caminos a tomar
+type Ruta = [String]
 
 -- | Laberinto con la información que el sabio
 -- conoce.
@@ -76,9 +78,10 @@ unirLaberinto trifurcacion laberinto camino =
         "izquierda" -> trifurcacion { izquierdaTrifurcacion = laberinto }
         "derecha" -> trifurcacion { derechaTrifurcacion = laberinto }
         "recto" -> trifurcacion { rectoTrifurcacion = laberinto }
+        _ -> error "Dirección incorrecta."
 
 {-| Función que construye un laberinto a partir de una ruta -}
-construirLaberinto :: [String] -> Maybe Laberinto
+construirLaberinto :: Ruta -> Maybe Laberinto
 construirLaberinto [] = Just $ laberintoDefault
 construirLaberinto (c:cs) =
     case c of
@@ -94,13 +97,40 @@ construirLaberinto (c:cs) =
             trifurcacionLaberinto = caminoDefault { rectoTrifurcacion = construirLaberinto cs}
         }
 
+        _ -> error "Dirección incorrecta."
+
+{-| Función que dada una ruta, se recorre el camino hasta alcanzar una pared (un Nothing). La ruta dada a partir de ese
+momento se convierte en el laberinto alcanzable por esa dirección.-}
+abrirPared :: Maybe Laberinto -- ^ Laberinto a modificar
+        -> Ruta         -- ^ Ruta a recorrer
+        -> Maybe Laberinto    -- ^ Laberinto modificado
+
+abrirPared Nothing _ = Nothing
+abrirPared (Just laberinto) ruta@(c:cs) =
+    let trifurcacion = trifurcacionLaberinto laberinto -- Trifurcación del laberinto
+        camino = case c of -- Camino tomado en la dirección `c`
+            "izquierda" -> izquierdaTrifurcacion trifurcacion
+            "recto" -> rectoTrifurcacion trifurcacion
+            "derecha" -> derechaTrifurcacion trifurcacion
+            _ -> error "Dirección incorrecta."
+        lab = case camino of
+            lab'@(Just laberinto') -> abrirPared lab' cs -- Si no hay una pared, seguimos buscando la pared.
+            Nothing -> construirLaberinto cs -- Si hay una pared, construimos un laberinto a partir de lo que queda de la ruta.
+    in (
+        Just laberinto {
+            -- Cambiamos la trifurcación, uniendolo con lo que queda
+            -- del recorrido.
+            trifurcacionLaberinto = unirLaberinto trifurcacion lab c
+        }
+    )
+
 --------------------------------------------------------------------------------------------
 
 -- * Funciones de Acceso
 
 {- |Función que recibe un laberinto y una ruta y retorna el laberinto que comienza en el
 punto al que conduce esa ruta -}
-recorrer :: Maybe Laberinto -> [String] -> Maybe Laberinto
+recorrer :: Maybe Laberinto -> Ruta -> Maybe Laberinto
 recorrer Nothing _ = Nothing
 recorrer lab [] = lab
 recorrer lab@(Just laberinto) (c:cs) = recorrer caminoEscogido' cs
@@ -112,6 +142,7 @@ recorrer lab@(Just laberinto) (c:cs) = recorrer caminoEscogido' cs
                 "izquierda" -> izquierdaTrifurcacion trifurcacion
                 "derecha" -> derechaTrifurcacion trifurcacion
                 "recto" -> rectoTrifurcacion trifurcacion
+                _ -> error "Dirección incorrecta."
 
             -- En caso de encontrarse con una pared, ignorar el paso actual
             caminoEscogido' = case caminoEscogido of
