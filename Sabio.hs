@@ -103,10 +103,6 @@ recorrerRuta = do
             lift $ putStrLn "No hay laberinto"
             St.put (curLab, [])
 
-        -- laberintoDefault -> do -- Camino sin salida y no hay tesoro
-        --     lift $ putStrLn "Se ha llegado a un camino sin salida."
-        --     St.put (curLab, [])
-
         Just lab -> case (tesoroLaberinto lab) of
             Just tesoro -> do -- Hay tesoro
                 lift $ putStrLn $ "Se ha encontrado un tesoro: " ++ show tesoro
