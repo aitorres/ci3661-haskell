@@ -13,12 +13,15 @@ import Control.Monad.Trans
 import Data.Maybe
 import qualified Control.Monad.State as St
 
+-- * Tipos de datos
 -- | Lista de direcciones a seguir.
 type Ruta = [String]
 
 -- | Monad Transformer que permite mantener el estado de la ruta
 -- y el laberinto.
 type LaberintoState = St.StateT (Laberinto, Ruta) IO ()
+
+-- * Funciones 
 
 {-| Imprimir las opciones del usuario-}
 opciones :: LaberintoState
