@@ -69,6 +69,23 @@ unirLaberinto trifurcacion laberinto camino =
         "derecha" -> trifurcacion { derechaTrifurcacion = laberinto }
         "recto" -> trifurcacion { rectoTrifurcacion = laberinto }
 
+{- Función que construye un laberinto a partir de una ruta -}
+construirLaberinto :: [String] -> Maybe Laberinto
+construirLaberinto [] = Just $ laberintoDefault
+construirLaberinto (c:cs) =
+    case c of
+        "izquierda" -> Just laberintoDefault { 
+            trifurcacionLaberinto = caminoDefault { izquierdaTrifurcacion = construirLaberinto cs}
+        }
+
+        "derecha" -> Just laberintoDefault { 
+            trifurcacionLaberinto = caminoDefault { derechaTrifurcacion = construirLaberinto cs}
+        }
+
+        "recto" -> Just laberintoDefault { 
+            trifurcacionLaberinto = caminoDefault { rectoTrifurcacion = construirLaberinto cs}
+        }
+
 --------------------------------------------------------------------------------------------
 
 {-
