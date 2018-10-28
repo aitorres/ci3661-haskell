@@ -20,6 +20,10 @@ import qualified Control.Monad.State as St
 -- y el laberinto.
 type LaberintoState = St.StateT (Laberinto, Ruta) IO ()
 
+-- | Monad Transformer que permite realizar operaciones IO
+-- que devuelvan Strings dentro del procedimiento principal
+type LaberintoString = St.StateT (Laberinto, Ruta) IO (String)
+
 -- * Funciones 
 
 {-| Imprimir las opciones del usuario-}
@@ -61,9 +65,7 @@ infi = do
 
         "2" -> do -- Preguntar Ruta
             lift $ putStrLn "Escribe la ruta separada por espacios (Ejemplo: derecha izquierda derecha recto)."
-            lift $ putStr "Ruta: "
-            lift $ hFlush stdout
-            rutaStr <- lift getLine -- leemos la ruta
+            rutaStr <- obtenerRuta
             let ruta = words rutaStr -- Obtenemos los caminos
             St.put $ (curLab, ruta) -- Actualizamos la ruta actual
             recorrerRuta
@@ -83,9 +85,7 @@ infi = do
                 infi -- repetimos loop
             _ -> do
                 lift $ putStrLn "Escribe la ruta separada por espacios (Ejemplo: derecha izquierda derecha recto)."
-                lift $ putStr "Ruta: "
-                lift $ hFlush stdout
-                rutaStr <- lift getLine -- leemos la ruta
+                rutaStr <- obtenerRuta
                 let ruta = words rutaStr -- Obtenemos los caminos
                 St.put $ (curLab, curRuta ++ ruta) -- Actualizamos la ruta actual
                 recorrerRuta
@@ -111,13 +111,19 @@ main = do
 --------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------
 
+{- |Función auxiliar que pide y devuelve al usuario una ruta. -}
+obtenerRuta :: LaberintoString
+obtenerRuta = do
+    lift $ putStr "Ruta: "
+    lift $ hFlush stdout
+    rutaStr <- lift getLine -- Leemos la ruta
+    return (rutaStr)
+
 {- |Función que crea un laberinto nuevo a partir de una ruta. -}
 laberintoNuevo :: LaberintoState
 laberintoNuevo = do
     lift $ putStrLn "Escribe la ruta separada por espacios (Ejemplo: derecha izquierda derecha recto)."
-    lift $ putStr "Ruta: "
-    lift $ hFlush stdout
-    rutaStr <- lift getLine -- Leemos la ruta
+    rutaStr <- obtenerRuta
 
     let newLab = fromMaybe laberintoDefault (construirLaberinto (words rutaStr)) -- obtenemos el nuevo laberinto
     St.put $ (newLab, []) -- Lo escogemos como el nuevo laberinto
@@ -161,9 +167,7 @@ paredAbierta :: LaberintoState
 paredAbierta = do
     (curLab, curRuta) <- St.get -- Obtenemos el estado actual
     lift $ putStrLn "Escribe la ruta separada por espacios (Ejemplo: derecha izquierda derecha recto)."
-    lift $ putStr "Ruta: "
-    lift $ hFlush stdout
-    rutaStr <- lift getLine -- Leemos la ruta
+    rutaStr <- obtenerRuta
     let ruta = words rutaStr
     St.put $ ( fromJust $ abrirPared (Just curLab) ruta, curRuta )    -- Actualizamos el estado
 
@@ -176,9 +180,7 @@ reportarDerrumbe = do
 
     -- Leemos la ruta
     lift $ putStrLn "Escribe la ruta separada por espacios (Ejemplo: derecha izquierda derecha recto)."
-    lift $ putStr "Ruta: "
-    lift $ hFlush stdout
-    rutaStr <- lift getLine
+    rutaStr <- obtenerRuta
     let ruta = words rutaStr
 
     St.put $ (fromJust $ crearPared (Just curLab) ruta, curRuta) -- Actualizamos laberinto
