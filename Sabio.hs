@@ -91,6 +91,26 @@ infi = do
                 recorrerRuta
                 infi -- repetimos loop
 
+        "7" -> do
+            lift $ putStrLn "Introduce a continuación el nombre que quieres darle al Laberinto: "
+            lift $ putStr "Nombre: "
+            lift $ hFlush stdout
+            nombreArchivo <- lift getLine
+            lift $ putStrLn nombreArchivo
+            -- Se crea el archivo o da error
+            -- Se almacena el show del laberinto
+            infi
+
+        "8" -> do
+            lift $ putStrLn "Introduce a continuación el nombre del Laberinto del que quieres hablar: "
+            lift $ putStr "Nombre: "
+            lift $ hFlush stdout
+            nombreArchivo <- lift getLine
+            lift $ putStrLn nombreArchivo
+            -- Se abre el archivo o da error
+            -- Se lee el contenido de larchivo para ver si es valido
+            -- Se hace read del laberinto y hacemos un get
+            infi
 
         "9" -> do -- Imprimir opciones
             opciones
