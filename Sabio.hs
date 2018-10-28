@@ -95,10 +95,9 @@ infi = do
             lift $ putStrLn "Introduce a continuación el nombre que quieres darle al Laberinto: "
             lift $ putStr "Nombre: "
             lift $ hFlush stdout
-            nombreArchivo <- lift getLine
-            lift $ putStrLn nombreArchivo
-            -- Se crea el archivo o da error
-            -- Se almacena el show del laberinto
+            nombreArchivo <- lift getLine -- Obtenemos el nombre del archivo
+            lift $ writeFile nombreArchivo (show curLab) -- Escribimos el Laberinto en el archivo
+            lift $ putStrLn ("El Laberinto ha recibido correctamente el nombre " ++ nombreArchivo)
             infi
 
         "8" -> do
@@ -106,10 +105,10 @@ infi = do
             lift $ putStr "Nombre: "
             lift $ hFlush stdout
             nombreArchivo <- lift getLine
-            lift $ putStrLn nombreArchivo
-            -- Se abre el archivo o da error
-            -- Se lee el contenido de larchivo para ver si es valido
-            -- Se hace read del laberinto y hacemos un get
+            lift $ putStrLn nombreArchivo -- Obtenemos el nombre del archivo
+            laberintoLeido <- lift $ readFile nombreArchivo -- Leemos el contenido del archivo
+            St.put $ ((read laberintoLeido) :: Laberinto, []) -- Parseamos el archivo como Laberinto
+            lift $ putStrLn ("Ahora estamos hablando del Laberinto " ++ nombreArchivo)
             infi
 
         "9" -> do -- Imprimir opciones
