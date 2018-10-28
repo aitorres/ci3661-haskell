@@ -50,9 +50,9 @@ opciones = do
 {- |Loop infinito para leer las opciones del usuario -}
 infi :: LaberintoState
 infi = do
+    (curLab, curRuta) <- St.get -- Obtenemos el estado actual
     lift $ putStr "Opción: "
     lift $ hFlush stdout
-    (curLab, curRuta) <- St.get -- Obtenemos el estado actual
     opcion <- lift getLine -- leemos la opcion
     case opcion of
         "1" -> do -- Comenzar a hablar de un laberinto nuevo
@@ -100,8 +100,7 @@ infi = do
             lift $ putStrLn "Introduce a continuación el nombre del Laberinto del que quieres hablar: "
             lift $ putStr "Nombre: "
             lift $ hFlush stdout
-            nombreArchivo <- lift getLine
-            lift $ putStrLn nombreArchivo -- Obtenemos el nombre del archivo
+            nombreArchivo <- lift getLine-- Obtenemos el nombre del archivo
             laberintoLeido <- lift $ readFile nombreArchivo -- Leemos el contenido del archivo
             St.put $ ((read laberintoLeido) :: Laberinto, []) -- Parseamos el archivo como Laberinto
             lift $ putStrLn ("Ahora estamos hablando del Laberinto " ++ nombreArchivo)
