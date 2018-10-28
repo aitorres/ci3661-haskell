@@ -21,7 +21,7 @@ data Laberinto =
         -- | Tesoro asociado al laberinto
         tesoroLaberinto :: Maybe Tesoro
     }
-    deriving Show
+    deriving (Show, Read)
 {-|
     Trifurcación para un laberinto.
 -}
@@ -31,7 +31,7 @@ data Trifurcacion =
         izquierdaTrifurcacion :: Maybe Laberinto, -- ^ Si se gira a la izquierda
         rectoTrifurcacion :: Maybe Laberinto  -- ^ Si se sigue recto
     }
-    deriving Show
+    deriving (Show, Read)
 
 {-|
     Tesoro a encontrar en un laberinto
@@ -41,7 +41,7 @@ data Tesoro =
         descripcionTesoro :: String, -- ^ Descripción del tesoro
         rectoTesoro :: Maybe Laberinto -- ^ Si se ignora el tesoro y se sigue recto
     }
-    deriving Show
+    deriving (Show, Read)
 --------------------------------------------------------------------------------------------
 
 -- * Funciones de Construcción
