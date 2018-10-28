@@ -1,7 +1,7 @@
 {-|
 Module      : Main
 License     : MIT
-Maintainer  : gustavoaca1997@gmail.com
+Maintainer  : gustavoaca1997@gmail.com, andresitorresm@gmail.com
 El programa principal que permite interactuar con el usuario, recibiendo rutas e indicando qué se
 encuentra al seguirlas
 -}

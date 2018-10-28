@@ -2,7 +2,7 @@
 Module      : Laberinto
 Description : Modulo con las funciones y tipos de datos que permiten la interacción y construcción de un laberinto.
 License     : MIT
-Maintainer  : gustavoaca1997@gmail.com
+Maintainer  : gustavoaca1997@gmail.com, andresitorresm@gmail.com
 Modulo con las funciones y tipos de datos que permiten la interacción y construcción de un laberinto.
 -}
 module Laberinto where
