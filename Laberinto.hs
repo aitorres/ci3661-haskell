@@ -1,24 +1,28 @@
 {-|
 Module      : Laberinto
-Description : Modulo con las funciones y tipos de datos que permiten la interacción y construcción de un laberinto.
+Description : Módulo con las funciones y tipos de datos que permiten la construcción de un laberinto e interacciones con él.
 License     : MIT
 Maintainer  : gustavoaca1997@gmail.com, andresitorresm@gmail.com
-Modulo con las funciones y tipos de datos que permiten la interacción y construcción de un laberinto.
+
+Módulo que incluye las funciones y tipos de datos que permiten la construcción de un laberinto,
+así como la interacción con ellos a través de rutas, trifurcaciones y tesoros. Incluye también
+funciones auxiliares utilizadas tanto de manera privada como en el cliente principal ("Main").
 -}
+
 module Laberinto where
 --------------------------------------------------------------------------------------------
 -- * Tipos de datos
--- | Lista de caminos a tomar
+--|  Lista de caminos a tomar
 type Ruta = [String]
 
--- | Laberinto con la información que el sabio
+--|  Laberinto con la información que el sabio
 -- conoce.
 data Laberinto =
     Laberinto {
-        -- | Trifurcación asociada al laberinto.
+        --|  Trifurcación asociada al laberinto.
         trifurcacionLaberinto :: Trifurcacion,
 
-        -- | Tesoro asociado al laberinto
+        --|  Tesoro asociado al laberinto
         tesoroLaberinto :: Maybe Tesoro
     }
     deriving (Show, Read)
@@ -46,7 +50,7 @@ data Tesoro =
 
 -- * Funciones de Construcción
 
-{- | Función que retorna un camino sin salida -}
+{-|  Función que retorna un camino sin salida -}
 caminoDefault :: Trifurcacion
 caminoDefault = Trifurcacion { 
         derechaTrifurcacion=Nothing, 
@@ -61,7 +65,7 @@ laberintoDefault = Laberinto {
     tesoroLaberinto = Nothing
 }
 
-{- |Función que recibe un String con la descripción de un tesoro y un laberinto
+{-| Función que recibe un String con la descripción de un tesoro y un laberinto
 indicando qué encontrarán si pasan por alto el tesoro, y retorna el Tesoro. -}
 crearTesoro :: String -> Maybe Laberinto -> Tesoro
 crearTesoro descripcion laberinto = Tesoro {
@@ -69,7 +73,7 @@ crearTesoro descripcion laberinto = Tesoro {
     rectoTesoro=laberinto
 }
 
-{- |Función que recibe una Trifurcacion, un laberinto y un indicador de cuál camino
+{-| Función que recibe una Trifurcacion, un laberinto y un indicador de cuál camino
 los relaciona (izquierda, derecha, recto), y retorna una Trifurcacion en la que se
 indique que dicho camino conduce a dicho laberinto. -}
 unirLaberinto :: Trifurcacion -> Maybe Laberinto -> String -> Trifurcacion
@@ -253,7 +257,7 @@ obtenerTesoro (Just lab) (c:cs) =
 
 -- * Funciones de Acceso
 
-{- |Función que recibe un laberinto y una ruta y retorna el laberinto que comienza en el
+{-| Función que recibe un laberinto y una ruta y retorna el laberinto que comienza en el
 punto al que conduce esa ruta -}
 recorrer :: Maybe Laberinto -> Ruta -> Maybe Laberinto
 recorrer Nothing _ = Nothing
@@ -274,16 +278,16 @@ recorrer lab@(Just laberinto) (c:cs) = recorrer caminoEscogido' cs
                 Nothing -> lab -- ignorar paso
                 l -> l
 
-{- |Función que recibe un laberinto y retorna el laberinto que comienza al voltear a la
+{-| Función que recibe un laberinto y retorna el laberinto que comienza al voltear a la
 izquierda -}
 voltearIquierda :: Maybe Laberinto -> Maybe Laberinto
 voltearIquierda lab = recorrer lab ["izquierda"]
 
-{- |Función que recibe un laberinto y retorna el laberinto que comienza al voltear a la
+{-| Función que recibe un laberinto y retorna el laberinto que comienza al voltear a la
 derecha -}
 voltearDerecha :: Maybe Laberinto -> Maybe Laberinto
 voltearDerecha lab = recorrer lab ["derecha"]
 
-{- |Función que recibe un laberinto y retorna el laberinto que comienza al seguir recto -}
+{-| Función que recibe un laberinto y retorna el laberinto que comienza al seguir recto -}
 seguirRecto :: Maybe Laberinto -> Maybe Laberinto
 seguirRecto lab = recorrer lab ["recto"]
