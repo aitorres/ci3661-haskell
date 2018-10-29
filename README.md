@@ -14,6 +14,9 @@ El cliente se ejecuta en un _loop_ infinito que pide al usuario opciones y luego
 
 El resto de detalles de implementación se encuentran a manera de documentación en formato Haddock dentro de los archivos del proyecto. Note que el archivo *makefile* genera automaticamente la documentación, en formato *html*, en una carpeta denominada *docs*.
 
+## Sobre implementaciones de Read y Show
+Se decidió no implementar de manera personalizada instancias de *Read* y *Show* para los tipos de datos *Laberinto*, *Trifurcación* o *Tesoro* ya que, al derivar Show y Read, el resultado es medianamente legible por un humano (al tener cada tipo identificadores de sus datos) y, además, simplifica en extremo el proceso de almacenar en archivos y posteriormente leer el contenido de un laberinto.
+
 ## Comandos del makefile disponibles
 Compilar correctamente el código fuente y generar la documentación:
 ```
