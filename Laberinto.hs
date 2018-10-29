@@ -154,6 +154,101 @@ crearPared mlab@(Just laberinto) (c:cs) =
             }
             _ -> error "Camino incorrecto."
 
+{-|
+Función que, dado un laberinto, una ruta y una
+descripción de tesoro, coloca un tesoro al final de la
+ruta proporcionada, ocultando el laberinto anteriormente
+alcanzable desde esa ruta en caso de que exista.
+-}
+colocarTesoro :: Maybe Laberinto   {-^ Laberinto a modificar-}
+            -> Ruta             {-^ Ruta a seguir -}
+            -> String           {-^ Descripción del tesoro a agregar -}
+            -> Maybe Laberinto  {-^ Laberinto modificado -}
+colocarTesoro Nothing _ _ = Nothing
+-- En el caso en el que llegamos al ultimo camino, lo eliminamos
+colocarTesoro a [] desc = 
+    Just $ Laberinto {
+        trifurcacionLaberinto = caminoDefault,
+        tesoroLaberinto = Just (crearTesoro desc a)
+    }
+colocarTesoro mlab@(Just laberinto) (c:cs) desc =
+    Just $ laberinto { 
+        trifurcacionLaberinto = trifurcacion'
+    }
+    where 
+         -- trifurcación original
+        trifurcacion = trifurcacionLaberinto laberinto
+        -- Trifurcación modificada
+        trifurcacion' = case c of
+            "izquierda" -> trifurcacion {
+                izquierdaTrifurcacion = 
+                    colocarTesoro (izquierdaTrifurcacion trifurcacion) cs desc
+            }
+            "recto" -> trifurcacion {
+                rectoTrifurcacion =
+                    colocarTesoro (rectoTrifurcacion trifurcacion) cs desc
+            }
+            "derecha" -> trifurcacion {
+                derechaTrifurcacion =
+                    colocarTesoro (derechaTrifurcacion trifurcacion) cs desc
+            }
+            _ -> error "Camino incorrecto."
+
+{-|
+Función que, dado un laberinto y una ruta, devuelve un laberinto
+en el cuál se elimina el tesoro que estaba al final de la ruta y se
+reestablece el laberinto anteriormente alcanzable desde ese punto.
+-}
+quitarTesoro :: Maybe Laberinto   {-^ Laberinto a modificar-}
+            -> Ruta             {-^ Ruta a seguir -}
+            -> Maybe Laberinto  {-^ Laberinto modificado -}
+quitarTesoro Nothing _ = Nothing
+-- En el caso en el que llegamos al ultimo camino, lo eliminamos
+quitarTesoro (Just lab) [] = 
+    case tesoroLaberinto lab of
+        Nothing -> Just laberintoDefault
+        Just tesoro -> rectoTesoro tesoro 
+quitarTesoro mlab@(Just laberinto) (c:cs) =
+    Just $ laberinto { 
+        trifurcacionLaberinto = trifurcacion'
+    }
+    where 
+         -- trifurcación original
+        trifurcacion = trifurcacionLaberinto laberinto
+        -- Trifurcación modificada
+        trifurcacion' = case c of
+            "izquierda" -> trifurcacion {
+                izquierdaTrifurcacion = 
+                    quitarTesoro (izquierdaTrifurcacion trifurcacion) cs
+            }
+            "recto" -> trifurcacion {
+                rectoTrifurcacion =
+                    quitarTesoro (rectoTrifurcacion trifurcacion) cs
+            }
+            "derecha" -> trifurcacion {
+                derechaTrifurcacion =
+                    quitarTesoro (derechaTrifurcacion trifurcacion) cs
+            }
+            _ -> error "Camino incorrecto."
+
+{-|
+Función que devuelve el tesoro existente en una ruta
+de un Laberinto.
+-}
+obtenerTesoro :: Maybe Laberinto -> Ruta -> Maybe Tesoro
+obtenerTesoro Nothing _ = Nothing
+obtenerTesoro (Just laberinto) [] = 
+    tesoroLaberinto laberinto
+obtenerTesoro (Just lab) (c:cs) = 
+    case c of
+        "izquierda" -> obtenerTesoro (izquierdaTrifurcacion trifurcacion) cs
+        "derecha" -> obtenerTesoro (derechaTrifurcacion trifurcacion) cs
+        "recto" -> obtenerTesoro (rectoTrifurcacion trifurcacion) cs
+        _ -> error "Camino incorrecto"
+    where
+        trifurcacion = trifurcacionLaberinto lab
+
+
 --------------------------------------------------------------------------------------------
 
 -- * Funciones de Acceso
