@@ -8,7 +8,7 @@ Portability : POSIX
 
 Cliente principal que permite interactuar con el usuario, recibiendo rutas e indicando qué se
 encuentra al seguirlas, permitiéndo además modificar el estado del laberinto y de las rutas
-parcialmente recorridas.
+parcialmente recorridas. Utiliza la estructuras y funciones definidas en "Laberinto".
 -}
 
 module Main where

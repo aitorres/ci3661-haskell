@@ -8,7 +8,7 @@ Portability : POSIX
 
 Módulo que incluye las funciones y tipos de datos que permiten la construcción de un laberinto,
 así como la interacción con ellos a través de rutas, trifurcaciones y tesoros. Incluye también
-funciones auxiliares utilizadas tanto de manera privada como en el cliente principal ("Main").
+funciones auxiliares utilizadas tanto de manera privada como en el cliente principal Sabio ("Main").
 -}
 
 module Laberinto where
