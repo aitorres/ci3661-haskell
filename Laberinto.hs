@@ -154,6 +154,66 @@ crearPared mlab@(Just laberinto) (c:cs) =
             }
             _ -> error "Camino incorrecto."
 
+{-|
+Función que, dado un laberinto, una ruta y una
+descripción de tesoro, coloca un tesoro al final de la
+ruta proporcionada, ocultando el laberinto anteriormente
+alcanzable desde esa ruta en caso de que exista.
+-}
+colocarTesoro :: Maybe Laberinto   {-^ Laberinto a modificar-}
+            -> Ruta             {-^ Ruta a seguir -}
+            -> String           {-^ Descripción del tesoro a agregar -}
+            -> Maybe Laberinto  {-^ Laberinto modificado -}
+colocarTesoro Nothing _ _ = Nothing
+-- En el caso en el que llegamos al ultimo camino, lo eliminamos
+colocarTesoro a [] desc = 
+    Just $ Laberinto {
+        trifurcacionLaberinto = caminoDefault,
+        tesoroLaberinto = Just (crearTesoro desc a)
+    }
+colocarTesoro mlab@(Just laberinto) (c:cs) desc =
+    Just $ laberinto { 
+        trifurcacionLaberinto = trifurcacion'
+    }
+    where 
+         -- trifurcación original
+        trifurcacion = trifurcacionLaberinto laberinto
+        -- Trifurcación modificada
+        trifurcacion' = case c of
+            "izquierda" -> trifurcacion {
+                izquierdaTrifurcacion = 
+                    colocarTesoro (izquierdaTrifurcacion trifurcacion) cs desc
+            }
+            "recto" -> trifurcacion {
+                rectoTrifurcacion =
+                    colocarTesoro (rectoTrifurcacion trifurcacion) cs desc
+            }
+            "derecha" -> trifurcacion {
+                derechaTrifurcacion =
+                    colocarTesoro (derechaTrifurcacion trifurcacion) cs desc
+            }
+            _ -> error "Camino incorrecto."
+
+{-|
+Función que determina si un laberinto cuenta con un tesoro ubicado
+en una ruta que se recibe como argumento.
+-}
+tieneTesoro :: Maybe Laberinto -> Ruta -> Bool
+tieneTesoro Nothing _ = False 
+tieneTesoro (Just laberinto) [] = 
+    case (tesoroLaberinto laberinto) of
+        Nothing -> False 
+        Just a -> True
+tieneTesoro (Just lab) (c:cs) = 
+    case c of
+        "izquierda" -> tieneTesoro (izquierdaTrifurcacion trifurcacion) cs
+        "derecha" -> tieneTesoro (derechaTrifurcacion trifurcacion) cs
+        "recto" -> tieneTesoro (rectoTrifurcacion trifurcacion) cs
+        _ -> error "Camino incorrecto"
+    where
+        trifurcacion = trifurcacionLaberinto lab
+
+
 --------------------------------------------------------------------------------------------
 
 -- * Funciones de Acceso

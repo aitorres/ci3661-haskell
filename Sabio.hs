@@ -67,14 +67,6 @@ infi = do
             recorrerRuta
             infi -- repetimos loop
 
-        "3" -> do -- Pared abierta
-            paredAbierta
-            infi
-
-        "4" -> do -- Reportar derrumbe
-            reportarDerrumbe
-            infi
-
         "2.1" -> case curRuta of -- Continuar ruta
             [] -> do
                 lift $ putStrLn "No hay ruta que seguir." -- Si no hay ruta que seguir
@@ -86,6 +78,18 @@ infi = do
                 St.put $ (curLab, curRuta ++ ruta) -- Actualizamos la ruta actual
                 recorrerRuta
                 infi -- repetimos loop
+
+        "3" -> do -- Pared abierta
+            paredAbierta
+            infi
+
+        "4" -> do -- Reportar derrumbe
+            reportarDerrumbe
+            infi
+
+        "6" -> do -- Reportar tesoro hallado
+            reportarTesoroHallado
+            infi
 
         "7" -> do
             lift $ putStrLn "Introduce a continuación el nombre que quieres darle al Laberinto: "
@@ -184,6 +188,29 @@ paredAbierta = do
     rutaStr <- lift obtenerRuta
     let ruta = words rutaStr
     St.put $ ( fromJust $ abrirPared (Just curLab) ruta, curRuta )    -- Actualizamos el estado
+
+{-| Si esta opción es seleccionada, se recibe un camino, luego se
+recorre el camino para colocar, al final del mismo, un tesoro. 
+La ruta dada por el "seguir recto" del tesoro se agrega
+como extensión del laberinto.-}
+reportarTesoroHallado :: LaberintoState
+reportarTesoroHallado = do
+    (curLab, curRuta) <- St.get -- Obtenemos el estado actual
+    lift $ putStrLn "Escribe la ruta separada por espacios (Ejemplo: derecha izquierda derecha recto)."
+    rutaStr <- lift obtenerRuta
+    let ruta = words rutaStr
+    case (tieneTesoro (Just curLab) ruta) of
+        True -> do
+            lift $ putStrLn 
+                "En la ubicación escogida, ya existe un tesoro. " ++ 
+                "¡No puedes agregar otro (pero puedes hacerte con una fortuna)!\n"
+        False -> do        
+            lift $ putStrLn "Escribe la descripción del tesoro."
+            lift $ putStr "Descripción: "
+            lift $ hFlush stdout
+            descTes <- lift $ getLine
+            St.put $ ( fromJust $ colocarTesoro (Just curLab) ruta descTes, curRuta )    -- Actualizamos el estado
+            lift $ putStrLn "El tesoro descrito ha sido colocado en la ruta seleccionada.\n"
 
 {- | Se recibe un camino y una dirección (izquierda, derecha o recto). 
 Se sigue el laberinto hasta ese punto y se elimina el laberinto 
