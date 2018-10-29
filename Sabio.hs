@@ -17,6 +17,7 @@ import Control.Monad
 import Control.Monad.Trans
 import Data.Maybe
 import System.IO
+import System.Directory
 import System.Exit
 import qualified Control.Monad.State as St
 
@@ -270,10 +271,14 @@ hablarDeLaberinto = do
     lift $ putStr "Nombre: "
     lift $ hFlush stdout
     nombreArchivo <- lift getLine-- Obtenemos el nombre del archivo
-    laberintoLeido <- lift $ readFile nombreArchivo -- Leemos el contenido del archivo
-    St.put $ ((read laberintoLeido) :: Laberinto, []) -- Parseamos el archivo como Laberinto
-    lift $ putStrLn ("Ahora estamos hablando del Laberinto " ++ nombreArchivo ++ "\n")
-
+    existeAchivo <- lift $ doesFileExist nombreArchivo
+    case existeAchivo of
+        True -> do
+            laberintoLeido <- lift $ readFile nombreArchivo -- Leemos el contenido del archivo
+            St.put $ ((read laberintoLeido) :: Laberinto, []) -- Parseamos el archivo como Laberinto
+            lift $ putStrLn ("Ahora estamos hablando del Laberinto " ++ nombreArchivo ++ "\n")
+        False ->
+            lift $ putStrLn ("No existe un archivo llamado " ++ nombreArchivo ++ " por lo que no podemos hablar de tal Laberinto.\n")
 
 {-| 
     Se recibe un camino y una dirección (izquierda, derecha o recto). 
