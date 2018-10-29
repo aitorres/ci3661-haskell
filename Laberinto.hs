@@ -195,20 +195,55 @@ colocarTesoro mlab@(Just laberinto) (c:cs) desc =
             _ -> error "Camino incorrecto."
 
 {-|
-Función que determina si un laberinto cuenta con un tesoro ubicado
-en una ruta que se recibe como argumento.
+Función que, dado un laberinto y una ruta, devuelve un laberinto
+en el cuál se elimina el tesoro que estaba al final de la ruta y se
+reestablece el laberinto anteriormente alcanzable desde ese punto.
 -}
-tieneTesoro :: Maybe Laberinto -> Ruta -> Bool
-tieneTesoro Nothing _ = False 
-tieneTesoro (Just laberinto) [] = 
-    case (tesoroLaberinto laberinto) of
-        Nothing -> False 
-        Just a -> True
-tieneTesoro (Just lab) (c:cs) = 
+quitarTesoro :: Maybe Laberinto   {-^ Laberinto a modificar-}
+            -> Ruta             {-^ Ruta a seguir -}
+            -> Maybe Laberinto  {-^ Laberinto modificado -}
+quitarTesoro Nothing _ = Nothing
+-- En el caso en el que llegamos al ultimo camino, lo eliminamos
+quitarTesoro (Just lab) [] = 
+    case tesoroLaberinto lab of
+        Nothing -> Just laberintoDefault
+        Just tesoro -> rectoTesoro tesoro 
+quitarTesoro mlab@(Just laberinto) (c:cs) =
+    Just $ laberinto { 
+        trifurcacionLaberinto = trifurcacion'
+    }
+    where 
+         -- trifurcación original
+        trifurcacion = trifurcacionLaberinto laberinto
+        -- Trifurcación modificada
+        trifurcacion' = case c of
+            "izquierda" -> trifurcacion {
+                izquierdaTrifurcacion = 
+                    quitarTesoro (izquierdaTrifurcacion trifurcacion) cs
+            }
+            "recto" -> trifurcacion {
+                rectoTrifurcacion =
+                    quitarTesoro (rectoTrifurcacion trifurcacion) cs
+            }
+            "derecha" -> trifurcacion {
+                derechaTrifurcacion =
+                    quitarTesoro (derechaTrifurcacion trifurcacion) cs
+            }
+            _ -> error "Camino incorrecto."
+
+{-|
+Función que devuelve el tesoro existente en una ruta
+de un Laberinto.
+-}
+obtenerTesoro :: Maybe Laberinto -> Ruta -> Maybe Tesoro
+obtenerTesoro Nothing _ = Nothing
+obtenerTesoro (Just laberinto) [] = 
+    tesoroLaberinto laberinto
+obtenerTesoro (Just lab) (c:cs) = 
     case c of
-        "izquierda" -> tieneTesoro (izquierdaTrifurcacion trifurcacion) cs
-        "derecha" -> tieneTesoro (derechaTrifurcacion trifurcacion) cs
-        "recto" -> tieneTesoro (rectoTrifurcacion trifurcacion) cs
+        "izquierda" -> obtenerTesoro (izquierdaTrifurcacion trifurcacion) cs
+        "derecha" -> obtenerTesoro (derechaTrifurcacion trifurcacion) cs
+        "recto" -> obtenerTesoro (rectoTrifurcacion trifurcacion) cs
         _ -> error "Camino incorrecto"
     where
         trifurcacion = trifurcacionLaberinto lab
