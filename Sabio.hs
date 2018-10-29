@@ -172,7 +172,7 @@ recorrerRuta = do
 
         Just lab -> case (tesoroLaberinto lab) of
             Just tesoro -> do -- Hay tesoro
-                lift $ putStrLn $ "Se ha encontrado un tesoro: " ++ show tesoro ++ "\n"
+                lift $ putStrLn $ "Se ha encontrado un tesoro: " ++ descripcionTesoro tesoro ++ "\n"
                 St.put (curLab, [])
 
             Nothing -> -- No hay tesoro
