@@ -199,6 +199,7 @@ reportarParedAbierta = do
     rutaStr <- lift obtenerRuta
     let ruta = words rutaStr
     St.put $ ( fromJust $ abrirPared (Just curLab) ruta, curRuta )    -- Actualizamos el estado
+    lift $ putStrLn "La pared ha sido abierta.\n"
 
 {-| 
     Si esta opción es seleccionada, se recibe un camino, luego se
@@ -294,6 +295,7 @@ reportarDerrumbe = do
     let ruta = words rutaStr
 
     St.put $ (fromJust $ crearPared (Just curLab) ruta, curRuta) -- Actualizamos laberinto
+    lift $ putStrLn "El derrumbe ha sido reportado.\n"
 
 --------------------------------------------------------------------------------------------
 -- * Funciones auxiliares
