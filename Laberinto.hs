@@ -197,10 +197,10 @@ colocarTesoro :: Maybe Laberinto    {-^ Laberinto a modificar-}
             -> Maybe Laberinto      {-^ Laberinto modificado -}
 colocarTesoro Nothing _ _ = Nothing
 -- En el caso en el que llegamos al ultimo camino, lo eliminamos
-colocarTesoro a [] desc = 
+colocarTesoro (Just lab) [] desc = 
     Just $ Laberinto {
-        trifurcacionLaberinto = caminoDefault,
-        tesoroLaberinto = Just (crearTesoro desc a)
+        trifurcacionLaberinto = trifurcacionLaberinto lab,
+        tesoroLaberinto = Just (crearTesoro desc (Just lab))
     }
 colocarTesoro mlab@(Just laberinto) (c:cs) desc =
     Just $ laberinto { 
